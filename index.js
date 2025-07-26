@@ -6,4 +6,7 @@ app.post("/", (req, res ) => {
     return res.json({message: req.body})
 
 });
+app.listen(3000, () => {
+    console.log("Webhook started")
+})
 
