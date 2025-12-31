@@ -20,7 +20,7 @@ app.add_middleware(
     allow_methods=["*"],   
     allow_headers=["*"],  
 )
-@app.get("/")
+@app.get("/", methods=["GET", "HEAD"])
 async def root():
     return {"status": "API running"}
 
@@ -83,7 +83,7 @@ async def webhook_call(req: Request):
         
      
         url = f"https://danu.biisho.et/api/v1/passenger/holds/{hold_id}/confirm"
-    
+        
         async with httpx.AsyncClient() as client:
                 response = await client.post(url, json={
                     "payment_reference": hold_id,
