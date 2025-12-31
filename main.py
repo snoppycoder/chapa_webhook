@@ -11,6 +11,8 @@ from html import unescape
 load_dotenv()
     
 app = FastAPI()
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -18,6 +20,10 @@ app.add_middleware(
     allow_methods=["*"],   
     allow_headers=["*"],  
 )
+@app.get("/")
+async def root():
+    return {"status": "API running"}
+
 @app.post("/payment")
 async def payment_link_gen(req:PaymentRequest):
     # print(len(req.client_ref), len(req.hold_id))
