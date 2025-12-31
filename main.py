@@ -34,7 +34,7 @@ async def payment_link_gen(req:PaymentRequest):
     "tx_ref": tx_ref,
     
 #    "callback_url": "http://localhost:8000/payment/webhook",
-    "callback_url": "https://danu.biisho.et/payment/webhook",
+    "callback_url": "https://chapa-webhook-bisho.onrender.com/payment/webhook",
 
     "return_url": "https://danu-booking.vercel.app/passenger",
     "customization": {
@@ -56,7 +56,8 @@ async def payment_link_gen(req:PaymentRequest):
     # print(data)
 @app.api_route("/payment/webhook", methods=["GET", "POST"])
 async def webhook_call(req: Request):
-    print(f"\n\n{req.url}\n\n")
+
+    print(f"\n\n\nEntered the webhook\n\n\n")
     api_key = os.getenv("danu_api_key")
     
     headers = {
