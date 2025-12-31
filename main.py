@@ -33,7 +33,8 @@ async def payment_link_gen(req:PaymentRequest):
     "phone_number": req.phone_number,
     "tx_ref": tx_ref,
     
-   "callback_url": "http://localhost:8000/payment/webhook",
+#    "callback_url": "http://localhost:8000/payment/webhook",
+    "callback_url": "https://danu.biisho.et/payment/webhook",
 
     "return_url": "https://danu-booking.vercel.app/passenger",
     "customization": {
