@@ -33,7 +33,9 @@ async def payment_link_gen(req:PaymentRequest):
     "phone_number": req.phone_number,
     "tx_ref": uuid_id,
    "callback_url": (
-    f"https://chapa-webhook-bisho.onrender.com/payment/webhook"
+    # f"https://chapa-webhook-bisho.onrender.com/payment/webhook"
+    # f"?client_ref={req.client_ref}&hold_id={req.hold_id}"
+    f"http://localhost:8000/payment/webhook"
     f"?client_ref={req.client_ref}&hold_id={req.hold_id}"
 ),
 
@@ -75,9 +77,10 @@ async def webhook_call(req: Request):
         hold_id = payload.get("hold_id", "")
      
         url = f"https://danu.biisho.et/api/v1/passenger/holds/{hold_id}/confirm"
+    
         async with httpx.AsyncClient() as client:
                 response = await client.post(url, json={
-                    "payment_reference": payload.get("trx_ref"),
+                    "payment_reference": payload.get("trx_ref", ""),
                     "payment_method": "chapa-telebirr", # better name
                     "client_ref": payload.get("client_ref")} ,headers=headers)
                 print(response)
