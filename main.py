@@ -33,7 +33,7 @@ async def payment_link_gen(req:PaymentRequest):
     "phone_number": req.phone_number,
     "tx_ref": uuid_id,
    "callback_url": (
-    f"http://localhost:8000/payment/webhook"
+    f"https://chapa-webhook-bisho.onrender.com/payment/webhook"
     f"?client_ref={req.client_ref}&hold_id={req.hold_id}"
 ),
 
