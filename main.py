@@ -20,7 +20,7 @@ app.add_middleware(
     allow_methods=["*"],   
     allow_headers=["*"],  
 )
-@app.get("/", methods=["GET", "HEAD"])
+@app.api_route("/", methods=["GET", "HEAD"])
 async def root():
     return {"status": "API running"}
 
