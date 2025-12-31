@@ -20,9 +20,9 @@ app.add_middleware(
 )
 @app.post("/payment")
 async def payment_link_gen(req:PaymentRequest):
-    uuid_id = str(uuid.uuid4())
+    # print(len(req.client_ref), len(req.hold_id))
     chapa_api_key = os.getenv("chapa_api_key")
-    
+    tx_ref = f"{req.hold_id}"
     url = "https://api.chapa.co/v1/transaction/initialize"
     payload = {
     "amount": req.amount,
@@ -31,13 +31,9 @@ async def payment_link_gen(req:PaymentRequest):
     "first_name": req.first_name,
     "last_name": req.last_name,
     "phone_number": req.phone_number,
-    "tx_ref": uuid_id,
-   "callback_url": (
-    # f"https://chapa-webhook-bisho.onrender.com/payment/webhook"
-    # f"?client_ref={req.client_ref}&hold_id={req.hold_id}"
-    f"http://localhost:8000/payment/webhook"
-    f"?client_ref={req.client_ref}&hold_id={req.hold_id}"
-),
+    "tx_ref": tx_ref,
+    
+   "callback_url": "http://localhost:8000/payment/webhook",
 
     "return_url": "https://danu-booking.vercel.app/passenger",
     "customization": {
@@ -69,20 +65,22 @@ async def webhook_call(req: Request):
     try:
         payload = {unescape(k): unescape(v) for k, v in req.query_params.items()}
         payload = dict(req.query_params)
+        hold_id = payload.get("trx_ref")
+        
         if "amp;hold_id" in payload:
             payload["hold_id"] = payload.pop("amp;hold_id")
         print(f"{payload} payload")
         if payload.get("status") == "failed":
             return JSONResponse({"status": "Payment failed"}, status_code=400) 
-        hold_id = payload.get("hold_id", "")
+        
      
         url = f"https://danu.biisho.et/api/v1/passenger/holds/{hold_id}/confirm"
     
         async with httpx.AsyncClient() as client:
                 response = await client.post(url, json={
-                    "payment_reference": payload.get("trx_ref", ""),
+                    "payment_reference": hold_id,
                     "payment_method": "chapa-telebirr", # better name
-                    "client_ref": payload.get("client_ref")} ,headers=headers)
+                    "client_ref": hold_id} ,headers=headers)
                 print(response)
                    
             # this where I call the confirm 
